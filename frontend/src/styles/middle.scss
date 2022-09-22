@@ -1,0 +1,113 @@
+.middle {
+  font-family: "proxima";
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  & div {
+    position: relative;
+    & div {
+      background: linear-gradient(
+        90deg,
+        #000,
+        rgba(0, 0, 0, 0.823),
+        rgba(0, 0, 0, 0.583),
+        rgba(255, 255, 255, 0)
+      );
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      position: absolute;
+      top: 0;
+    }
+    & img {
+      width: 100%;
+      object-fit: cover;
+      max-height: 100vh;
+    }
+  }
+  & section {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    color: white;
+    width: 100%;
+    & div {
+      margin: 100px auto;
+      padding-left: 170px;
+    }
+    & h1 {
+      font-size: 48px;
+      text-transform: uppercase;
+      font-weight: 100;
+      margin: 0;
+    }
+    & h3 {
+      font-weight: 100;
+      font-size: 32px;
+      text-transform: capitalize;
+      margin: 20px 0;
+    }
+    & h4 {
+      font-weight: 100;
+      font-size: 18px;
+      text-transform: capitalize;
+      line-height: 1.3;
+      padding: 0;
+      margin: 0;
+    }
+    & button {
+      background: none;
+      width: 230px;
+      height: 45px;
+      border: 1px solid white;
+      color: $contrast-color;
+      margin-top: 45px;
+      text-transform: uppercase;
+      font-weight: 500;
+      &:hover {
+        background-color: $contrast-color;
+        color: $contrast-color-reflex;
+      }
+    }
+  }
+}
+.middle .blue-ii1sx {
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  align-items: center;
+  bottom: 158px;
+  justify-content: center;
+  & div:nth-child(1) {
+    width: 349px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.7019607843);
+    display: flex;
+    align-items: stretch;
+    overflow: hidden;
+    border-radius: 33px;
+    border: 1px solid #e91e6369;
+    transition: 300ms ease-in-out;
+    &:hover {
+      width: 470px;
+    }
+  }
+  & input {
+    height: 100%;
+    width: 80%;
+    border: 0;
+    background: none;
+    padding: 0 15px;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  & svg {
+    display: inline;
+    width: 20%;
+    padding: 5px 0;
+    height: 70%;
+  }
+}

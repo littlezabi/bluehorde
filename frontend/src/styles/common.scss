@@ -1,0 +1,104 @@
+body {
+  background: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: $primary-fonts;
+  scroll-behavior: smooth;
+}
+ul,
+a,
+textarea,
+input {
+  padding: 0;
+  margin: 0;
+  font-family: $primary-fonts;
+  color: $default-color;
+  list-style: none;
+  transition: 300ms;
+  outline: none;
+}
+a {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+}
+button {
+  cursor: pointer;
+  transition: 300ms ease-in;
+  outline: none;
+}
+.App {
+  display: grid;
+  grid-template-areas: "header" "middle" "main" "footer";
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+}
+header {
+  grid-area: header;
+}
+.middle {
+  grid-area: middle;
+}
+main {
+  grid-area: "main";
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: normal;
+  margin: 0;
+}
+footer {
+  grid-area: footer;
+}
+.page-size {
+  margin: auto;
+  width: 1280px;
+  // min-width: 100%;
+  max-width: 1280px;
+}
+.flex-center {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.line-v {
+  display: block;
+  width: 1px;
+  height: 100px;
+  background: $vertical-line;
+  &.h-20 {
+    height: 20px;
+  }
+  &.h-40 {
+    height: 40px;
+  }
+  &.h-50 {
+    height: 50px;
+  }
+}
+.line-h {
+  display: block;
+  width: 100px;
+  height: 1px;
+  background: $vertical-line;
+  &.h-20 {
+    height: 20px;
+  }
+  &.h-40 {
+    height: 40px;
+  }
+  &.h-50 {
+    height: 50px;
+  }
+}
+.flex-h {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}

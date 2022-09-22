@@ -1,0 +1,65 @@
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-thin.woff?p) format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-light.woff?p) format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-regular.woff?p) format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-semibold.woff?p) format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-bold.woff?p) format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-extrabold.woff?p) format("woff");
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: proxima;
+  src: url(./fonts/proximanova/proxima-nova-black.woff?p) format("woff");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "quicksands";
+  src: url("./fonts/quicksand-regular.ttf");
+}
+$primary-fonts: "quicksands";
+$secondary-fonts: "proxima";
+$default-color: rgb(113, 113, 113);
+$primary-color: rgb(255, 0, 153);
+$primary-color-light: #ef00998a;
+$primary-color-reflex: rgb(255, 255, 255);
+$contrast-color: #fff;
+$contrast-color-reflex: rgb(0, 0, 0);
+$foreground-contrast-color: #e91e6314;
+$phone-middle-text-colors: #e91e63;
+$vertical-line: #e91e6342;
+$horizantal-line: #ffffff17;
+$pricing-bg: #ffffff1c;
+$pricing-btn: #ff0080;
+$pricing-btn-hover: #db0571;
+@mixin shadow {
+  box-shadow: 0 8px 16px #00000029;
+  // border: 1px solid #ff00ca2e;
+}

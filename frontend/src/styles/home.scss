@@ -1,0 +1,64 @@
+.home-view {
+  background: $contrast-color;
+  color: $contrast-color-reflex;
+}
+.blue-trpwx {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  & div {
+    margin: 1px;
+    min-height: 200px;
+    transition: 300ms ease-in-out;
+  }
+  & .blue-xls {
+    cursor: pointer;
+    background: $foreground-contrast-color;
+    overflow: hidden;
+    &:hover {
+      @include shadow;
+    }
+    position: relative;
+    & img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      object-fit: cover;
+    }
+  }
+  & .blue-tts-full {
+    height: 100%;
+  }
+  & .blue-kkrds {
+    height: 533px;
+  }
+  & .blue-utlslx {
+    z-index: 3;
+    position: absolute;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    & h2 {
+      width: 93%;
+      font-weight: normal;
+      font-size: 20px;
+    }
+    & h3 {
+      font-size: 16px;
+      width: 93%;
+      margin-top: 10px;
+    }
+  }
+  & .ieotax {
+    margin-right: 0;
+    & section {
+      display: flex;
+      & div {
+        width: 100%;
+        height: 400px;
+      }
+    }
+  }
+}
