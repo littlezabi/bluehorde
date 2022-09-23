@@ -1,13 +1,49 @@
 from datetime import datetime
 from selenium.webdriver.common.by import By
+from hooks.variables import IMAGES_DOWNLOAD_PATH, IMAGE_PHONE_RPATH
+import requests
+import random
+import re
+import os
+
+
+def loading(start, text='loading...'):
+    print(text)
+    print(os.system('cls'))
+    print(text)
+
+
+def getTitleFromUrl(url):
+    try:
+        k = url.split('/')
+        k = k[len(k) - 1]
+        k = k.split('-')[0]
+        k = re.sub('_|-', ' ', k)
+        return k
+    except:
+        return False
+
+
+def marenaTextFilter(text):
+    if type(text) is bytes:
+        text = text.decode('ascii')
+    return text
+
+
+def downloadImage(src, name):
+    loading(True, 'image downloading...')
+    res = requests.get(src)
+    with open(IMAGES_DOWNLOAD_PATH + name, 'wb') as file:
+        file.write(res.content)
+    return IMAGE_PHONE_RPATH + 'a' + str(random.randint(999, 99999)) + '-' + name
 
 
 def print_(str_):
-    print('______________________')
+    print('_________xxxxx_____________')
     print()
     print(str_)
     print()
-    print('______________________')
+    print('_________xxxxx_____________')
 
 
 def writeOn(str_):

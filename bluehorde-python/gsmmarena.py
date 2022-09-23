@@ -1,9 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from driver import Driver
+# from driver import Driver
 from selectors import selectors_marena
-from hooks.hookup import writeOn, print_
-from hooks.variables import SITENAME
+from hooks.hookup import writeOn, print_, downloadImage, marenaTextFilter, getTitleFromUrl
+from hooks.variables import SITENAME, CHROMEDRIVER
 from bs4 import BeautifulSoup as bs4
 import random
 import sys
@@ -11,27 +11,34 @@ import requests
 import time
 from storage.database import Mongo
 from filters import MarenaFilters
+from fake_useragent import UserAgent
 
 
-class Marena(Driver):
+class Marena:
     def __init__(self):
+        options = webdriver.ChromeOptions()
+        options.add_argument('--user-data-dir=C:/blue-horde/')
+        self.driver = webdriver.Chrome(
+            executable_path=CHROMEDRIVER, options=options)
         self.scraped_data = []
+        self.ok_title = ''
+        self.driver_is_live = False
+        self.current_url = ''
         self.readLinks()
 
     def start(self, url):
-        self.source = self.requester(url)
+        self.current_url = url
+        self.source = ''
+        self.requester(url)
         self.html = bs4(self.encode_(self.source), 'html.parser')
         data = {
-            # 'name': self.get_title(),
+            'name': self.get_title(),
             'brief_scrap': self.get_specs_breif_pattern(),
-            # 'mobile_specs': self.get_specs(),
-            # 'mobile_pricing': self.get_pricing()
+            'mobile_specs': self.get_specs(),
+            'mobile_pricing': self.get_pricing()
         }
-        # data['short_detail'] = MarenaFilters(data['mobile_specs']).values
-        # for k in data:
-        #     print('xxxxxxx')
-        #     print_(data[k])
-        #     print('xxxxxxx')
+        data['short_detail'] = MarenaFilters(data['mobile_specs']).values
+        print_(data)
 
     def readLinks(self):
         with open('./assets/marena.txt') as file:
@@ -39,18 +46,20 @@ class Marena(Driver):
             for link in links:
                 print_(link)
                 self.start(link)
-                return 1
+                # return 1
 
     def requester(self, url):
-        # res = requests.get(url)
+        # headers = UserAgent().random
+        # res = requests.get(url, headers={'Content-Type': headers})
         # return res.text
-        driver = self.driver()
-        driver.get(url)
-        html = driver.page_source
-        return html
+        self.driver.get(url)
+        html = self.driver.page_source
+        self.source = html
 
     def encode_(self, str_):
-        return str(str_).encode(sys.stdout.encoding, errors='replace')
+        str_ = str_.encode("ascii", "ignore")
+        str_ = str_.decode()
+        return str_
 
     def get_pricing(self):
         html = self.html
@@ -101,21 +110,21 @@ class Marena(Driver):
                 name = self.encode_(table.select('th')[0].getText())
                 if tric == name:
                     continue
-                tric = name
+                tric = marenaTextFilter(name)
                 key = self.encode_(table.select('td')[0].getText())
                 value = self.encode_(table.select('td')[1].getText())
                 net = {
-                    'name': name,
-                    key: value
+                    'name': marenaTextFilter(name),
+                    key: marenaTextFilter(value)
                 }
                 for k in table.find_all('tr'):
                     try:
                         key = self.encode_(k.select('td')[0].getText())
                         value = self.encode_(k.select('td')[1].getText())
-                        net[key] = value
+                        net[key] = marenaTextFilter(value)
                     except Exception as e:
                         pass
-                specification_list.append(net)
+                specification_list.append(marenaTextFilter(net))
             except Exception as e:
                 writeOn('Error Marena -> get_specs: '+str(e))
         return specification_list
@@ -125,33 +134,33 @@ class Marena(Driver):
         img = src.select('.specs-photo-main')[0]
         specs = src.select('.specs-brief')[0]
         specs = specs.select('span')
-        # try:
-        img = img.select('img')[0]
-        print(img)
-        img = img['src']
-        print('___xxxx___')
-        print_(img)
-        print('___xxx___')
-        # except:
-        #     img = False
         try:
-            rel = specs[1].getText()
+            img = img.select('img')[0]['src']
+            try:
+                img = downloadImage(img, img.split(
+                    '/')[len(img.split('/')) - 1])
+            except:
+                pass
+        except:
+            img = False
+        try:
+            rel = marenaTextFilter(specs[1].getText())
         except:
             rel = False
         try:
-            thi = specs[3].getText()
+            thi = marenaTextFilter(specs[3].getText())
         except:
             thi = False
         try:
-            os = specs[5].getText()
+            os = marenaTextFilter(specs[5].getText())
         except:
             os = False
         try:
-            sto = specs[7].getText()
+            sto = marenaTextFilter(specs[7].getText())
         except:
             False
         try:
-            rex = src.select('.specs-spotlight-features')[0]
+            rex = marenaTextFilter(src.select('.specs-spotlight-features')[0])
         except:
             rex = False
         # popularity
@@ -159,10 +168,15 @@ class Marena(Driver):
             popu = rex.select('.help-popularity')[0].select('strong.accent')[0]
         except:
             popu = False
-        popu = float(popu.getText().replace('%', ''))
+        try:
+            if popu == False:
+                popu = float(marenaTextFilter(popu.getText().replace('%', '')))
+        except:
+            if popu != False:
+                popu = popu.getText().replace('%', '')
         # fans and clients clicks
         try:
-            fans = random.randint(400, 2000)
+            fans = marenaTextFilter(random.randint(400, 2000))
         except:
             fans = False
         try:
@@ -172,7 +186,7 @@ class Marena(Driver):
         # display size
         try:
             dpsze = src.select('strong.accent')[2]
-            dpsze = dpsze.getText().replace('"', '')
+            dpsze = marenaTextFilter(dpsze.getText().replace('"', ''))
         except:
             dpsze = False
         try:
@@ -180,41 +194,42 @@ class Marena(Driver):
         except:
             pass
         try:
-            dppxl = src.select('div')[1].getText()
+            dppxl = marenaTextFilter(src.select('div')[1].getText())
         except:
             dppxl = False
         # camera
         try:
-            fcmrp = src.select(
-                '.accent.accent-camera')[0].getText()
+            fcmrp = marenaTextFilter(src.select(
+                '.accent.accent-camera')[0].getText())
         except:
             fcmrp = False
         try:
-            vidsze = src.select('div')[2].getText()
+            vidsze = marenaTextFilter(src.select('div')[2].getText())
         except:
             vidsze = False
         # memory
         try:
-            mem = src.select(
-                '.accent.accent-expansion')[0].getText()
+            mem = marenaTextFilter(src.select(
+                '.accent.accent-expansion')[0].getText())
         except:
             mem = False
 
         try:
-            chipset = src.select('div')[3].getText()
+            chipset = marenaTextFilter(src.select('div')[3].getText())
         except:
             chipset = False
         # battery
         try:
-            btr = src.select('.accent.accent-battery')[0].getText()
+            btr = marenaTextFilter(src.select(
+                '.accent.accent-battery')[0].getText())
         except:
             btr = False
         try:
-            btrTp = src.select('div')[4].getText()
+            btrTp = marenaTextFilter(src.select('div')[4].getText())
         except:
             btrTp = False
         return {
-            'title': self.get_title(),
+            'title': marenaTextFilter(self.get_title()),
             'released': rel,
             'image': img,
             'thickness': thi,
@@ -234,15 +249,23 @@ class Marena(Driver):
         }
 
     def get_title(self):
-        try:
-            title = self.html.select(
-                '.review-header')[0].select('.article-info-line')[0]
-            title = title.find('h1')
-            title = title.getText()
-        except:
-            title = self.html.select('h1')
-            title = title.getText()
-        return title
+        if self.ok_title == '':
+            try:
+                try:
+                    title = self.html.select(
+                        '.review-header')[0].select('.article-info-line')[0]
+                    title = title.find('h1')
+                    title = title.getText()
+                except:
+                    title = self.html.select('.article-info')[0]
+                    title = self.html.select('h1')[0]
+                    title = title.getText()
+            except:
+                title = getTitleFromUrl(self.current_url)
+            self.ok_title = title
+            return title
+        else:
+            return self.ok_title
 
     def scrap_selector(self, selector_array):
         for selector in selector_array:
