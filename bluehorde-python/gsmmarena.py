@@ -9,6 +9,8 @@ import random
 import sys
 import requests
 import time
+from storage.database import Mongo
+from filters import MarenaFilters
 
 
 class Marena(Driver):
@@ -20,13 +22,16 @@ class Marena(Driver):
         self.source = self.requester(url)
         self.html = bs4(self.encode_(self.source), 'html.parser')
         data = {
-            'name': self.get_title(),
+            # 'name': self.get_title(),
             'brief_scrap': self.get_specs_breif_pattern(),
-            'mobile_specs': self.get_specs(),
-            'mobile_pricing': self.get_pricing()
+            # 'mobile_specs': self.get_specs(),
+            # 'mobile_pricing': self.get_pricing()
         }
-        for k in data:
-            print_(data[k])
+        # data['short_detail'] = MarenaFilters(data['mobile_specs']).values
+        # for k in data:
+        #     print('xxxxxxx')
+        #     print_(data[k])
+        #     print('xxxxxxx')
 
     def readLinks(self):
         with open('./assets/marena.txt') as file:
@@ -117,8 +122,18 @@ class Marena(Driver):
 
     def get_specs_breif_pattern(self):
         src = self.html.select('.center-stage')[0]
+        img = src.select('.specs-photo-main')[0]
         specs = src.select('.specs-brief')[0]
         specs = specs.select('span')
+        # try:
+        img = img.select('img')[0]
+        print(img)
+        img = img['src']
+        print('___xxxx___')
+        print_(img)
+        print('___xxx___')
+        # except:
+        #     img = False
         try:
             rel = specs[1].getText()
         except:
@@ -201,6 +216,7 @@ class Marena(Driver):
         return {
             'title': self.get_title(),
             'released': rel,
+            'image': img,
             'thickness': thi,
             'os': os,
             'storage': sto,
