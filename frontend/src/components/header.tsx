@@ -1,12 +1,13 @@
 import {WEBSITE_NAME } from '../utils/constants'
 import {HiHome} from 'react-icons/hi'
 import {BsBellFill} from 'react-icons/bs'
+import {Link} from 'react-router-dom'
 
 function Header(){
     return  <header>
     <nav className='page-size'>
         <ul>
-            <a href="#"><span>{WEBSITE_NAME}</span></a>
+            <Link to="/"><span>{WEBSITE_NAME}</span></Link>
             <div>
                 <ul>
                     <li><a href="#" title='just login'>SIGN IN</a></li>
@@ -15,7 +16,7 @@ function Header(){
             </div>
         </ul>
         <ul>
-            <li><a href="/" className='active'><HiHome/></a></li>
+            <li><Link to="/" className='active'><HiHome/></Link></li>
             <li><a href="/">Products</a></li>
             <li><a href="/">Top Rated</a></li>
             <li><a href="/">Gadgets</a></li>

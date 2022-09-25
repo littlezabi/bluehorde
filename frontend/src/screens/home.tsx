@@ -1,5 +1,8 @@
+import MiddleView from "../components/middle"
+
 function Home(){
-    return <div className="home-view">
+    return <><MiddleView />
+    <div className="home-view">
         <div className="page-size blue-trpwx">
             <div className="ieotax">
                 <section className="flex-center">
@@ -21,7 +24,7 @@ function Home(){
                 </div>
             </div>
         </div>
-    </div>
+    </div></>
 }
 export default Home
 

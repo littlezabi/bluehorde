@@ -1,6 +1,6 @@
 from datetime import date
 import random
-from hooks.hookup import print_
+# from hooks.hookup import print_
 import re
 
 
@@ -34,7 +34,6 @@ class MarenaFilters:
     def spread(self, arr):
         final_ = {'subtitle': self.get_subtitle()}
         for k in arr:
-            print(k)
             kname = k['name'].lower().strip()
             if 'launch' in kname:
                 final_['release'] = self.getRDate(k)
@@ -83,7 +82,7 @@ class MarenaFilters:
                 qtr = k[t].lower()
                 qtr = self.filter(qtr)
                 return qtr
-        return self.getDisplay()
+        return self.getDisplay(k)
 
     def getProcessor(self, k):
         for t in k:

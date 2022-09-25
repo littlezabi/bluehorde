@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 # from driver import Driver
 from selectors import selectors_marena
-from hooks.hookup import writeOn, print_, downloadImage, marenaTextFilter, getTitleFromUrl
+from hooks.hookup import writeOn, print_, downloadImage, marenaTextFilter, getTitleFromUrl, getDate, createSlug
 from hooks.variables import SITENAME, CHROMEDRIVER
 from bs4 import BeautifulSoup as bs4
 import random
@@ -12,49 +12,68 @@ import time
 from storage.database import Mongo
 from filters import MarenaFilters
 from fake_useragent import UserAgent
+from storage.database import Mongo
 
 
 class Marena:
     def __init__(self):
         options = webdriver.ChromeOptions()
+
+        # options.add_argument('--proxy-server=%s' % PROXY)
+        # options.add_argument('--disable-gpu')
+        # options.add_argument('--headless')
         options.add_argument('--user-data-dir=C:/blue-horde/')
         self.driver = webdriver.Chrome(
             executable_path=CHROMEDRIVER, options=options)
+        # time.sleep(10000)
         self.scraped_data = []
         self.ok_title = ''
         self.driver_is_live = False
         self.current_url = ''
+        self.links_db = Mongo('URLs_list').modal
+        self.mobile_devices_db = Mongo().modal
         self.readLinks()
 
-    def start(self, url):
+    def start(self, url, id):
         self.current_url = url
-        self.source = ''
-        self.requester(url)
+        self.source = self.requester(url)
         self.html = bs4(self.encode_(self.source), 'html.parser')
+        get_sbp = self.get_specs_breif_pattern()
+        print(get_sbp)
+        if get_sbp == 'unable-to-scrap':
+            return 1
         data = {
             'name': self.get_title(),
-            'brief_scrap': self.get_specs_breif_pattern(),
+            'brief_scrap': get_sbp,
             'mobile_specs': self.get_specs(),
-            'mobile_pricing': self.get_pricing()
+            'mobile_pricing': self.get_pricing(),
+            'createdAt': getDate(),
+            'original': url,
+            'from': 'gsmarena'
         }
         data['short_detail'] = MarenaFilters(data['mobile_specs']).values
-        print_(data)
+        data['slug'] = createSlug(data['name'])
+        if self.mobile_devices_db.insert_one_(data):
+            self.links_db.update_one({'_id': id}, {'$set': {'scrapped': True}})
+        print('Done -> ', data['slug'])
 
     def readLinks(self):
-        with open('./assets/marena.txt') as file:
-            links = file.readlines()
-            for link in links:
-                print_(link)
-                self.start(link)
-                # return 1
+        links = self.links_db.find({'scrapped': False}, {
+                                   'url': 1}).limit(200)
+        i = 0
+        for link in links:
+            i += 1
+            print_(f'{i} -> ' + link['url'])
+            self.start(link['url'], link['_id'])
 
     def requester(self, url):
         # headers = UserAgent().random
         # res = requests.get(url, headers={'Content-Type': headers})
         # return res.text
-        self.driver.get(url)
+        html = self.driver.get(url)
         html = self.driver.page_source
         self.source = html
+        return html
 
     def encode_(self, str_):
         str_ = str_.encode("ascii", "ignore")
@@ -165,16 +184,11 @@ class Marena:
             rex = False
         # popularity
         try:
-            popu = rex.select('.help-popularity')[0].select('strong.accent')[0]
+            popu = rex.select(
+                '.help-popularity')[0].select('strong.accent')[0].getText()
+            popu = popu.replace('%', '')
         except:
             popu = False
-        try:
-            if popu == False:
-                popu = float(marenaTextFilter(popu.getText().replace('%', '')))
-        except:
-            if popu != False:
-                popu = popu.getText().replace('%', '')
-        # fans and clients clicks
         try:
             fans = marenaTextFilter(random.randint(400, 2000))
         except:
@@ -249,23 +263,19 @@ class Marena:
         }
 
     def get_title(self):
-        if self.ok_title == '':
+        try:
             try:
-                try:
-                    title = self.html.select(
-                        '.review-header')[0].select('.article-info-line')[0]
-                    title = title.find('h1')
-                    title = title.getText()
-                except:
-                    title = self.html.select('.article-info')[0]
-                    title = self.html.select('h1')[0]
-                    title = title.getText()
+                title = self.html.select(
+                    '.review-header')[0].select('.article-info-line')[0]
+                title = title.find('h1')
+                title = title.getText()
             except:
-                title = getTitleFromUrl(self.current_url)
-            self.ok_title = title
-            return title
-        else:
-            return self.ok_title
+                title = self.html.select('.article-info')[0]
+                title = self.html.select('h1')[0]
+                title = title.getText()
+        except:
+            title = getTitleFromUrl(self.current_url)
+        return title
 
     def scrap_selector(self, selector_array):
         for selector in selector_array:

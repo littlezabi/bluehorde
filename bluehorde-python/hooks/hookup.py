@@ -5,12 +5,14 @@ import requests
 import random
 import re
 import os
+import time
 
 
 def loading(start, text='loading...'):
-    print(text)
-    print(os.system('cls'))
-    print(text)
+    pass
+    # print(text)
+    # print(os.system('cls'))
+    # print(text)
 
 
 def getTitleFromUrl(url):
@@ -22,6 +24,23 @@ def getTitleFromUrl(url):
         return k
     except:
         return False
+
+
+def createSlug(title):
+    title = re.sub(' |_|__|--|  |"|\'', '-', title)
+    title = re.sub('.php|.html', '', title)
+    title = title.replace('(', '').replace(')', '')
+    title = title.replace('{', '').replace('}', '')
+    title = title.replace('[', '').replace(']', '')
+    title = title.replace(',', '')
+    title = title.replace('.', '')
+    title = title.replace('--', '-')
+    title = title.replace('&', 'and')
+    title = title.replace('&amp;', 'and')
+    title = title.lower()
+    number = random.randint(99, 999)
+    title = title + '-' + str(number)
+    return title
 
 
 def marenaTextFilter(text):
@@ -36,6 +55,10 @@ def downloadImage(src, name):
     with open(IMAGES_DOWNLOAD_PATH + name, 'wb') as file:
         file.write(res.content)
     return IMAGE_PHONE_RPATH + 'a' + str(random.randint(999, 99999)) + '-' + name
+
+
+def getDate():
+    return time.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def print_(str_):

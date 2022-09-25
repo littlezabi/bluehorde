@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "./backend/dist/",
+      "rootDir": "./backend/src/",
+      "strict": true,
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+    },
+    "exclude": ["node_modules"]
+  }
