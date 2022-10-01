@@ -102,3 +102,16 @@ footer {
   justify-content: center;
   flex-direction: column;
 }
+.badge {
+  background: $success;
+  padding: 2px 15px;
+  font-size: 13px;
+  display: inline-block;
+  color: white;
+}
+
+.badge-round {
+  padding: 3px 25px;
+  border-radius: 20px;
+  font-size: 14px;
+}

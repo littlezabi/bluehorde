@@ -49,9 +49,10 @@ $secondary-fonts: "proxima";
 $default-color: rgb(113, 113, 113);
 $primary-color: rgb(255, 0, 153);
 $primary-color-light: #ef00998a;
-$primary-color-reflex: rgb(255, 255, 255);
+$primary-color-reflex: #ffffff;
 $contrast-color: #fff;
 $contrast-color-reflex: rgb(0, 0, 0);
+$product-top-text-color: #000000;
 $foreground-contrast-color: #e91e6314;
 $phone-middle-text-colors: #e91e63;
 $vertical-line: #e91e6342;
@@ -59,6 +60,8 @@ $horizantal-line: #ffffff17;
 $pricing-bg: #ffffff1c;
 $pricing-btn: #ff0080;
 $pricing-btn-hover: #db0571;
+$box-shadow: 3px 6px 20px 0px #00000029;
+$success: dodgerblue;
 @mixin shadow {
   box-shadow: 0 8px 16px #00000029;
 }

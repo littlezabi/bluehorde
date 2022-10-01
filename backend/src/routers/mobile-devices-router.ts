@@ -1,5 +1,5 @@
 import express,{ Request, Response } from "express";
-import SmartDevices from '../models/smart-modal'
+import {SmartDevices} from '../models/modals'
 import expressAsyncHandler from "express-async-handler";
 const smartDevicesRouter = express.Router()
 smartDevicesRouter.get('/:slug', expressAsyncHandler(async (req: Request, res:Response)=>{

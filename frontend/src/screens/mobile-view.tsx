@@ -20,7 +20,7 @@ function MobileView(){
             console.log('error: ', _getSmartError, _getSmartItem)
         }
     }, [_getSmartStatus, dispatch, _getSmartError, _getSmartItem]) 
-    return <>
+    return <>       
     <div className="mobile-view">
             <div className="page-size mobile-top-view">
             <img src="/media/assets/top-bg-layer.svg" alt="" />

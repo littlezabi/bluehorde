@@ -17,7 +17,7 @@ function Header(){
         </ul>
         <ul>
             <li><Link to="/" className='active'><HiHome/></Link></li>
-            <li><a href="/">Products</a></li>
+            <li><Link to="/categories">Categories</Link></li>
             <li><a href="/">Top Rated</a></li>
             <li><a href="/">Gadgets</a></li>
             <li><a href="/">Blueterminal</a></li>

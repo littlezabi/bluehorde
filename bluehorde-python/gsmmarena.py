@@ -32,14 +32,32 @@ class Marena:
         self.current_url = ''
         self.links_db = Mongo('URLs_list').modal
         self.mobile_devices_db = Mongo().modal
+        self.catCollection = Mongo('categories').modal
+        self.catlist = [k for k in self.catCollection.find(
+            {}, {'category': 1, '_id': 1})]
         self.readLinks()
+
+    def getCategory(self, item, catlist, catcol):
+        name = item.split(' ')[0]
+        if name == '':
+            name = item.split(' ')[1]
+        name = name.lower()
+        for cat in catlist:
+            if cat['category'] == name:
+                catcol.update_one({'_id': cat['_id']}, {'$inc': {'items': 1}})
+                return cat['category'], cat['_id']
+
+        added_cat = catcol.insert_one(
+            {'category': name, 'items': 1, 'image': ''})
+        id = added_cat['_id']
+        return name, id
 
     def start(self, url, id):
         self.current_url = url
         self.source = self.requester(url)
         self.html = bs4(self.encode_(self.source), 'html.parser')
         get_sbp = self.get_specs_breif_pattern()
-        print(get_sbp)
+        # print(get_sbp)
         if get_sbp == 'unable-to-scrap':
             return 1
         data = {
@@ -49,10 +67,21 @@ class Marena:
             'mobile_pricing': self.get_pricing(),
             'createdAt': getDate(),
             'original': url,
-            'from': 'gsmarena'
+            'from': 'gsmarena',
         }
         data['short_detail'] = MarenaFilters(data['mobile_specs']).values
         data['slug'] = createSlug(data['name'])
+        try:
+            getCat = self.getCategory(
+                data['name'], self.catlist, self.catCollection)
+            category = getCat[0]
+            cat_id = getCat[1]
+        except:
+            category = 'common'
+            cat_id = 0
+
+        data['category'] = category
+        data['cat_id'] = cat_id
         if self.mobile_devices_db.insert_one_(data):
             self.links_db.update_one({'_id': id}, {'$set': {'scrapped': True}})
         print('Done -> ', data['slug'])
@@ -120,7 +149,11 @@ class Marena:
 
     def get_specs(self):
         specification_list = []
-        spec_list = self.html.select('#specs-list')[0]
+        try:
+            spec_list = self.html.select('#specs-list')[0]
+        except:
+            spec_list = self.html.select('.review-header')[0]
+
         tables = spec_list.select('table')
         m = 0
         tric = ''

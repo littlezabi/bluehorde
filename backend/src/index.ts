@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import 'dotenv/config'
 import smartDevicesRouter from './routers/mobile-devices-router'
 import mongoose from 'mongoose';
+import categoriesRouter from './routers/categories-router';
 
 const app: Application = express();
 mongoose.connect("mongodb://localhost/bluehorde"); 
@@ -11,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 
 app.use('/smart', smartDevicesRouter)
-
+app.use('/products', categoriesRouter)
 app.get('/', (req: Request, res: Response) => {
   res.send('Healthy')
 })

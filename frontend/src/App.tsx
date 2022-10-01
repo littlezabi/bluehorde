@@ -1,10 +1,9 @@
-// import React from 'react';
 import Footer from './components/footer';
 import Header from './components/header';
 import Home from './screens/home';
 import MobileView from './screens/mobile-view'
 import {  Route, Routes } from "react-router-dom";
-import MobilePhones from './screens/mobile';
+import Products from './screens/products';
 function App() {
   return (
       <div className="App">
@@ -12,7 +11,8 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<Home/>} />
-              <Route path="/mobile/" element={<MobilePhones/>} />
+              <Route path="/categories/" element={<Products/>} />
+              <Route path="/category/:slug" element={<Products/>} />
               <Route path="/mobile/:slug" element={<MobileView/>} />
             </Routes>
           </main> 
